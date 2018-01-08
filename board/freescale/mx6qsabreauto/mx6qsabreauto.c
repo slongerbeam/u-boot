@@ -30,6 +30,7 @@
 #include <pca953x.h>
 #include <power/pmic.h>
 #include <power/pfuze100_pmic.h>
+#include <ipu_pixfmt.h>
 #include "../common/pfuze.h"
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -620,6 +621,13 @@ int checkboard(void)
 
 	return 0;
 }
+
+#if defined(CONFIG_OF_BOARD_SETUP)
+int ft_board_setup(void *blob, bd_t *bd)
+{
+	return ipuv3_add_simplefb_node(blob);
+}
+#endif
 
 #ifdef CONFIG_USB_EHCI_MX6
 #define USB_HOST1_PWR     PORTEXP_IO_NR(0x32, 7)

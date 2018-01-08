@@ -14,6 +14,7 @@
 #include <common.h>
 #include <asm/errno.h>
 #include <asm/global_data.h>
+#include <fdt_support.h>
 #include <linux/string.h>
 #include <linux/list.h>
 #include <linux/fb.h>
@@ -606,6 +607,33 @@ int ipuv3_fb_init(struct fb_videomode const *mode,
 	gmode = mode;
 	gdisp = disp;
 	gpixfmt = pixfmt;
+
+	return 0;
+}
+
+int ipuv3_add_simplefb_node(void *blob)
+{
+	static const char compat[] = "simple-framebuffer";
+	static const char disabled[] = "disabled";
+	int off, ret;
+
+	off = fdt_add_subnode(blob, 0, "framebuffer");
+	if (off < 0)
+		return -1;
+
+	ret = fdt_setprop(blob, off, "status", disabled, sizeof(disabled));
+	if (ret < 0)
+		return -1;
+
+	ret = fdt_setprop(blob, off, "compatible", compat, sizeof(compat));
+	if (ret < 0)
+		return -1;
+
+	ret = fdt_setup_simplefb_node(blob, off, panel.frameAdrs,
+				      panel.winSizeX, panel.winSizeY,
+				      panel.winSizeX * 2, "r5g6b5");
+	if (ret < 0)
+		return -1;
 
 	return 0;
 }

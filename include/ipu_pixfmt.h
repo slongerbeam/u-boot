@@ -64,5 +64,6 @@ int ipuv3_fb_init(struct fb_videomode const *mode,
 		  uint8_t disp,
 		  uint32_t pixfmt);
 void ipuv3_fb_shutdown(void);
+int ipuv3_add_simplefb_node(void *blob);
 
 #endif
